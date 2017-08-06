@@ -58,5 +58,16 @@ to get updates from Sonos into the spotify-filter program.
 
 # TBD
 
-Replacing explicit songs with Radio Edits (this is blocked on Spotify not exposing the play queue for editing). A workaround that copies a playlist, replaces explicit songs with radio edits if available can be done for when playing from playlists, but that isn't a complete solution.
+Replacing explicit songs with Radio Edits (this is blocked on Spotify
+not exposing the play queue for editing). A workaround that copies a
+playlist, replaces explicit songs with radio edits if available can be
+done for when playing from playlists, but that isn't a complete
+solution.
+
+# Support
+
+None. I subscribed to Google Play Music. It provides this
+functionality already, has better search capabilities (Podcasts 
+search anyone?) and allows me to upload music to the cloud to listen
+on any supported device including Sonos.
 
