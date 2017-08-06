@@ -34,7 +34,7 @@ You may have a config.json file in the same directory as the program:
         "client_id": "<the client id from the Spotify application registration>,
         "client_secret": "<the client secret from the Spotify application registration>,
         "ignore": ["Pixel", "Basement"],
-	"log_level": "DEBUG|INFO|WARN(default)|ERROR"
+        "log_level": "DEBUG|INFO|WARN(default)|ERROR"
     }
     
 # Exclude Devices
