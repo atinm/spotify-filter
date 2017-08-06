@@ -21,6 +21,7 @@ this. If you don't need Sono Spotify filtering, you do not need to run
 this.
 
 You will need to create a settings.json file for node-sonos-http-api with:
+
     {
         "webhook": "http://localhost:5007/sonos/updates"
     }
