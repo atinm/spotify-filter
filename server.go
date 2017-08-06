@@ -88,22 +88,22 @@ func main() {
 	sonos.HandleFunc("/updates", HandleUpdate).Methods("POST")
 
 	go func() {
-		url := auth.AuthURL(state)
-		err := open.Run(url)
-		if err != nil {
-			log.Fatalf("Could not open %s: %v", url, err)
-		}
+			url := auth.AuthURL(state)
+			err := open.Run(url)
+			if err != nil {
+				log.Fatalf("Could not open %s: %v", url, err)
+			}
 
-		// wait for auth to complete
-		client = <-ch
+			// wait for auth to complete
+			client = <-ch
 
-		// use the client to make calls that require authorization
-		user, err := client.CurrentUser()
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("You are logged in as:", user.ID)
-		go Monitor()
+			// use the client to make calls that require authorization
+			user, err := client.CurrentUser()
+			if err != nil {
+				log.Fatal(err)
+			}
+			log.Println("[DEBUG] You are logged in as:", user.ID)
+			go Monitor()
 	}()
 
 	log.Fatal(http.ListenAndServe(":5007", router))
