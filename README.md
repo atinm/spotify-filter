@@ -20,6 +20,15 @@ be on the same LAN as the program and go to
 
 # Building and Running
 
+Start by registering your application at the following page:
+
+    https://developer.spotify.com/my-applications/
+
+You'll get a client ID and secret key for your application. Export the
+SPOTIFY_ID and SPOTIFY_SECRET environment variables set to the client
+id and secret you created for your application to make it available to
+the program.
+
     go get github.com/atinm/spotify-filter
     go build
     ./spotify-filter
