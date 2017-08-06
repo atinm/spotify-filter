@@ -1,7 +1,7 @@
 package main
 
 import (
-  "github.com/hashicorp/logutils"
+	"github.com/hashicorp/logutils"
 )
 
 type Update struct {
@@ -88,6 +88,6 @@ type Rule struct {
 }
 
 type Config struct {
-  Ignored []string `json:"ignored"`
+	Ignored []string `json:"ignored"`
 	LogLevel logutils.LogLevel `json:"log_level"`
 }

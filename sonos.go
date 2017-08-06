@@ -37,9 +37,9 @@ func HandleUpdate(w http.ResponseWriter, req *http.Request) {
 		bodyStr := fmt.Sprintf("%s", body)
 		log.Print("[DEBUG] body: ", bodyStr)
 		title := s.Player.State.CurrentTrack.Title
-    artist := s.Player.State.CurrentTrack.Artist
+		artist := s.Player.State.CurrentTrack.Artist
 		uri := s.Player.State.CurrentTrack.Uri
-    roomName = s.Player.RoomName
+		roomName = s.Player.RoomName
 		log.Println("[DEBUG]", title)
 		log.Println("[DEBUG]", uri)
 
@@ -54,15 +54,15 @@ func HandleUpdate(w http.ResponseWriter, req *http.Request) {
 			}
 
 			if Rules(track, roomName) {
-        nextUrl := fmt.Sprintf("http://localhost:5005/%s/next", roomName)
-        response, err := http.Get(nextUrl)
-        defer response.Body.Close()
-        if err != nil {
-          log.Print("[WARN] Could not skip track '%s': %v", title, artist, err)
-          return
-        }
-        log.Printf("[INFO] Skipped '%s' by '%s' playing on '%s'\n", title, artist, roomName)
-      }
+				nextUrl := fmt.Sprintf("http://localhost:5005/%s/next", roomName)
+				response, err := http.Get(nextUrl)
+				defer response.Body.Close()
+				if err != nil {
+					log.Print("[WARN] Could not skip track '%s': %v", title, artist, err)
+					return
+				}
+				log.Printf("[INFO] Skipped '%s' by '%s' playing on '%s'\n", title, artist, roomName)
+			}
 		}
 
 	case "volume-change":
