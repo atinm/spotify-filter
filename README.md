@@ -20,6 +20,13 @@ https://github.com/jishi/node-sonos-http-api locally on port 5005
 this. If you don't need Sono Spotify filtering, you do not need to run
 this.
 
+You will need to create a settings.json file for node-sonos-http-api with:
+    {
+        "webhook": "http://localhost:5007/sonos/updates"
+    }
+
+to get updates from Sonos into this.
+
 # Toggling Filtering of Explicit Content
 
 You can either just kill the program to stop filtering, or you have to

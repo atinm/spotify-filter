@@ -85,7 +85,7 @@ func main() {
 	router.HandleFunc("/filter", ToggleFilter).Methods("PUT")
 
 	sonos := router.PathPrefix("/sonos").Subrouter()
-	sonos.HandleFunc("/update", HandleUpdate).Methods("POST")
+	sonos.HandleFunc("/updates", HandleUpdate).Methods("POST")
 
 	go func() {
 			url := auth.AuthURL(state)
