@@ -6,7 +6,7 @@ Create a config.json file to exclude particular devices from
 monitoring:
 
     {
-	"ignore": ["Pixel", "Basement"]
+        "ignore": ["Pixel", "Basement"]
     }
 
 The names are from the Device list shown in the Spotify application
