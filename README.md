@@ -13,7 +13,9 @@ secret key for your application.
 
 Export the `SPOTIFY_ID` and `SPOTIFY_SECRET` environment variables set
 to the client id and secret you created above at application
-registration make them available to the program.
+registration make them available to the program (or you can use the
+configration file `config.json` to save these as described under the
+Configuration section):
 
     go get github.com/atinm/spotify-filter
     go build
