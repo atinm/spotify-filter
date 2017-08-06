@@ -1,9 +1,5 @@
 package main
 
-import (
-	"github.com/hashicorp/logutils"
-)
-
 type Update struct {
 	Type      string   `json:"type"`
 }
@@ -85,9 +81,4 @@ type MuteChange struct {
 
 type Rule struct {
 	Explicit bool
-}
-
-type Config struct {
-	Ignored []string `json:"ignored"`
-	LogLevel logutils.LogLevel `json:"log_level"`
 }
