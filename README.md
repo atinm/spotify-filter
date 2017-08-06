@@ -42,4 +42,7 @@ need to create a settings.json file for node-sonos-http-api with:
 
 to get updates from Sonos into the spotify-filter program.
 
+# TBD
+
+Replacing explicit songs with Radio Edits (this is blocked on Spotify not exposing the play queue for editing). A workaround that copies a playlist, replaces explicit songs with radio edits if available can be done for when playing from playlists, but that isn't a complete solution.
 
