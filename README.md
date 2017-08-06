@@ -29,6 +29,7 @@ it running as long as you want it to keep filtering explicit content.
 # Configuration
 
 You may have a config.json file in the same directory as the program:
+
     {
         "client_id": "<the client id from the Spotify application registration>,
         "client_secret": "<the client secret from the Spotify application registration>,
