@@ -1,23 +1,6 @@
 # spotify-filter
 Skip explicit songs from playing on Spotify devices (Speakers including Sonos, Computers, Smartphones)
 
-# Exclude Devices
-Create a config.json file to exclude particular devices from
-monitoring:
-
-    {
-        "ignore": ["Pixel", "Basement"]
-    }
-
-The names are from the Device list shown in the Spotify application
-devices list.
-
-# Toggling Filtering of Explicit Content
-
-You can either just kill the program to stop filtering, or you have to
-be on the same LAN as the program and go to
-`http://localhost:5005/filter` in the browser (or curl).
-
 # Building and Running
 
 Start by registering your application at the following page:
@@ -43,12 +26,39 @@ the program to read the user player state (read the songs playing, and
 to skip to the next song). Accept and the program will continue. Leave
 it running as long as you want it to keep filtering explicit content.
 
+# Configuration
+
+You may have a config.json file in the same directory as the program:
+    {
+        "client_id": "<the client id from the Spotify application registration>,
+        "client_secret": "<the client secret from the Spotify application registration>,
+        "ignore": ["Pixel", "Basement"],
+	"log_level": "DEBUG|INFO|WARN(default)|ERROR"
+    }
+    
+# Exclude Devices
+
+To ignore certain devices, add the names as seen in the Spotify
+application devices list to the config.json file:
+
+    {
+        "ignore": ["Pixel", "Basement"]
+    }
+
+# Toggling Filtering of Explicit Content
+
+You can either just kill the program to stop filtering, or you have to
+be on the same LAN as the program and go to
+`http://localhost:5005/filter` in the browser (or curl).
+
 # Sonos only
 
 Filtering Spotify explicit songs from playing on Sonos requires
-running https://github.com/jishi/node-sonos-http-api locally on port
-5005 (default). Follow the instructions on how to start it. You will
-need to create a settings.json file for node-sonos-http-api with:
+running `https://github.com/jishi/node-sonos-http-api` locally on port
+5005 (default).
+
+Follow the instructions on how to start it. You will need to create a
+`settings.json` (not spotify-filter) file for node-sonos-http-api with:
 
     {
         "webhook": "http://localhost:5007/sonos/updates"
