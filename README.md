@@ -24,12 +24,13 @@ Start by registering your application at the following page:
 
     https://developer.spotify.com/my-applications/
 
-You'll get a client ID and secret key for your application. Export the
-`SPOTIFY_ID` and `SPOTIFY_SECRET` environment variables set to the client
-id and secret you created for your application to make it available to
-the program. Set the Redirect URI to be
-`http://localhost:5007/callback` (the port that the program listens
-on) and Save.
+Set the Redirect URI to be `http://localhost:5007/callback` (the port
+that the program listens on) and Save. You'll get a client ID and
+secret key for your application.
+
+Export the `SPOTIFY_ID` and `SPOTIFY_SECRET` environment variables set
+to the client id and secret you created above at application
+registration make them available to the program.
 
     go get github.com/atinm/spotify-filter
     go build
