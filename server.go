@@ -68,6 +68,8 @@ func main() {
 	if err != nil {
 		log.Print("[DEBUG] No config file specified, ignoring.")
 	} else {
+		defer os.Close(conf)
+		
 		decoder := json.NewDecoder(conf)
 		err = decoder.Decode(&config)
 		if err != nil {
