@@ -59,7 +59,7 @@ func completeAuth(w http.ResponseWriter, r *http.Request) {
 func main() {
 	logFilter := &logutils.LevelFilter{
 		Levels: []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
-		MinLevel: logutils.LogLevel("INFO"),
+		MinLevel: logutils.LogLevel("WARN"),
 		Writer: os.Stderr,
 	}
 	log.SetOutput(logFilter)
@@ -69,7 +69,7 @@ func main() {
 		log.Print("[DEBUG] No config file specified, ignoring.")
 	} else {
 		defer os.Close(conf)
-		
+
 		decoder := json.NewDecoder(conf)
 		err = decoder.Decode(&config)
 		if err != nil {
