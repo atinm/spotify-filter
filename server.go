@@ -38,7 +38,7 @@ var (
 	state       string
 	certificate = "cert.pem"
 	key         = "key.pem"
-	port        = "5700"
+	port        = "5007"
 )
 
 func GetFilter(w http.ResponseWriter, req *http.Request) {
