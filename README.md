@@ -18,7 +18,7 @@ registration to make them available to the program (or you can use the configura
 to save it as described under the Configuration section).
 
 The program listens using HTTPS for the authentication token from the authorization server, and therefore you
-need to provide the cert and key pem files. You can generate these from the generate_cert program in crypto/tls.
+need to provide the cert and key pem files. You can generate these from the [generate_cert program in crypto/tls](https://golang.org/src/crypto/tls/generate_cert.go).
 
     go get github.com/atinm/spotify-filter
     go build
