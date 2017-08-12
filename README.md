@@ -60,7 +60,7 @@ be on the same LAN as the program and go to
 # Sonos only
 
 Filtering Spotify explicit songs from playing on Sonos requires
-running `https://github.com/jishi/node-sonos-http-api` locally on port
+running [`https://github.com/jishi/node-sonos-http-api`](https://github.com/jishi/node-sonos-http-api) locally on port
 5005 (default).
 
 Follow the instructions on how to start it. You will need to create a
