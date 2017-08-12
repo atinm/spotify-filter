@@ -120,7 +120,7 @@ func main() {
 		}
 		state = uuid.NewV4().String()
 		url := auth.AuthURL(state)
-		err := open.Run(url)
+		err := open.Run(url + "&show_dialog=true")
 		if err != nil {
 			log.Fatalf("Could not open %s: %v", url, err)
 		}
