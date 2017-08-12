@@ -3,15 +3,13 @@ Skip explicit songs from playing on Spotify devices (Speakers including Sonos, C
 
 # Building and Running
 
-Start by registering your application at the following page:
-
-    https://developer.spotify.com/my-applications/
+Start by registering your application at [Spotify Application Registration](https://developer.spotify.com/my-applications/)
 
 Set the Redirect URI to be `http://localhost:5009/callback` which is the port
-where you will run the authorization server (`https://github.com/atinm/spotify-auth-server`)
+where you will run the authorization server [`https://github.com/atinm/spotify-auth-server`](https://github.com/atinm/spotify-auth-server))
 on, and Save. You'll get a client ID and secret key for your application.
 
-Note: You need to run the authorization server (`https://github.com/atinm/spotify-auth-server`) before
+Note: You need to run the authorization server [`https://github.com/atinm/spotify-auth-server`](https://github.com/atinm/spotify-auth-server) before
 you run this as the spotify-filter uses the authorization server to get the Spotify access_token and
 refresh_token from the Spotify authorization server.
 
