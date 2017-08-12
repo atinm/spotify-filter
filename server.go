@@ -38,6 +38,7 @@ var (
 	state       string
 	certificate = "cert.pem"
 	key         = "key.pem"
+	port        = "5700"
 )
 
 func GetFilter(w http.ResponseWriter, req *http.Request) {
@@ -159,6 +160,9 @@ func onReady() {
 		if config.KeyFile != "" {
 			key = config.KeyFile
 		}
+		if config.Port != "" {
+			port = config.Port
+		}
 	}
 
 	router := mux.NewRouter()
@@ -195,5 +199,5 @@ func onReady() {
 		go Monitor()
 	}()
 
-	log.Fatal(http.ListenAndServeTLS(":5007", certificate, key, router))
+	log.Fatal(http.ListenAndServeTLS(":"+port, certificate, key, router))
 }

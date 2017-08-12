@@ -11,5 +11,6 @@ type Config struct {
 	RedirectURI     string            `json:"redirect_uri"`
 	CertificateFile string            `json:"cert"`
 	KeyFile         string            `json:"key"`
+	Port            string            `json:"port"`
 	LogLevel        logutils.LogLevel `json:"log_level"`
 }
