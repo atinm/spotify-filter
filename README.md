@@ -7,20 +7,24 @@ Start by registering your application at the following page:
 
     https://developer.spotify.com/my-applications/
 
-Set the Redirect URI to be `http://localhost:5007/callback` (the port
-that the program listens on) and Save. You'll get a client ID and
-secret key for your application.
+Set the Redirect URI to be `http://localhost:5009/callback` which is the port
+where you will run the authorization server (`https://github.com/atinm/spotify-auth-server`)
+on, and Save. You'll get a client ID and secret key for your application.
 
-Export the `SPOTIFY_ID` and `SPOTIFY_SECRET` environment variables set
-to the client id and secret you created above at application
-registration make them available to the program (or you can use the
-configration file `config.json` to save these as described under the
-Configuration section):
+Note: You need to run the authorization server (`https://github.com/atinm/spotify-auth-server`) before
+you run this as the spotify-filter uses the authorization server to get the Spotify access_token and
+refresh_token from the Spotify authorization server.
+
+Export the `SPOTIFY_ID` environment variable set to the client id you created above at application
+registration to make them available to the program (or you can use the configration file `config.json`
+to save it as described under the Configuration section).
+
+The program listens using HTTPS for the authentication token from the authorization server, and therefore you
+need to provide the cert and key pem files. You can generate these from the generate_cert program in crypto/tls.
 
     go get github.com/atinm/spotify-filter
     go build
     export SPOTIFY_ID=<the client id from the Spotify application registration>
-    export SPOTIFY_SECRET=<the client secret from the Spotify application registration>
     ./spotify-filter
 
 The program will pop up the browser to authenticate the user to allow
@@ -34,11 +38,12 @@ You may have a config.json file in the same directory as the program:
 
     {
         "client_id": "<the client id from the Spotify application registration>,
-        "client_secret": "<the client secret from the Spotify application registration>,
         "ignore": ["Pixel", "Basement"],
-        "log_level": "DEBUG|INFO|WARN(default)|ERROR"
+        "log_level": "DEBUG|INFO|WARN(default)|ERROR",
+        "cert": "cert.pem",
+        "key": "key.pem"
     }
-    
+
 # Exclude Devices
 
 To ignore certain devices, add the names as seen in the Spotify
@@ -80,7 +85,6 @@ solution.
 # Support
 
 None. I subscribed to Google Play Music. It provides this
-functionality already, has better search capabilities (Podcasts 
+functionality already, has better search capabilities (Podcasts
 search anyone?) and allows me to upload music to the cloud to listen
 on any supported device including Sonos.
-

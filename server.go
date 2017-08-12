@@ -26,7 +26,7 @@ var (
 	// the client id and client secret and can get the access token and refresh
 	// token from Spotify and return to this application on its own callback as
 	// query parameters
-	redirectURI = "http://localhost:5009/callback"
+	redirectURI = "https://localhost:5009/callback"
 	rule        = Rule{Explicit: true}
 	client      *spotify.Client
 	track       *spotify.FullTrack
@@ -34,6 +34,8 @@ var (
 	auth        spotify.Authenticator
 	ch          = make(chan *spotify.Client)
 	state       string
+	certificate = "cert.pem"
+	key         = "key.pem"
 )
 
 func GetFilter(w http.ResponseWriter, req *http.Request) {
@@ -94,6 +96,12 @@ func main() {
 		if config.RedirectURI != "" {
 			redirectURI = config.RedirectURI
 		}
+		if config.CertificateFile != "" {
+			certificate = config.CertificateFile
+		}
+		if config.KeyFile != "" {
+			key = config.KeyFile
+		}
 	}
 
 	router := mux.NewRouter()
@@ -129,5 +137,5 @@ func main() {
 		go Monitor()
 	}()
 
-	log.Fatal(http.ListenAndServe(":5007", router))
+	log.Fatal(http.ListenAndServeTLS(":5007", certificate, key, router))
 }
