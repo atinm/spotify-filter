@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/atinm/spotify-filter/icon"
+	"github.com/getlantern/systray"
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/logutils"
 	"github.com/satori/go.uuid"
@@ -71,7 +73,62 @@ func completeAuth(w http.ResponseWriter, req *http.Request) {
 	ch <- &client
 }
 
+func updateIcon() {
+	if rule.Explicit {
+		systray.SetIcon(icon.Enable)
+	} else {
+		systray.SetIcon(icon.Disable)
+	}
+}
 func main() {
+	// Should be called at the very beginning of main().
+	systray.Run(onReady)
+}
+
+func onReady() {
+	//systray.SetIcon(icon.Enable)
+	//systray.SetTitle("Kid Friendly Spotify")
+	systray.SetTooltip("Kid Friendly Spotify")
+	mExplicit := systray.AddMenuItem("Parental Control", "Parental Control")
+	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
+
+	// We can manipulate the systray in other goroutines
+	go func() {
+		//systray.SetTitle("Kid Friendly Spotify")
+		systray.SetTooltip("Kid Friendly Spotify")
+		if rule.Explicit {
+			mExplicit.Check()
+			log.Print("[DEBUG] parental controls are enabled")
+		} else {
+			mExplicit.Uncheck()
+			log.Print("[DEBUG] parental controls are disabled")
+		}
+		updateIcon()
+
+		for {
+			select {
+			case <-mExplicit.ClickedCh:
+				if mExplicit.Checked() {
+					mExplicit.Uncheck()
+					rule.Explicit = false
+					log.Print("[DEBUG] Disabled parental controls")
+				} else {
+					mExplicit.Check()
+					rule.Explicit = true
+					log.Print("[DEBUG] Enabled parental controls")
+				}
+				updateIcon()
+			}
+		}
+	}()
+
+	go func() {
+		<-mQuit.ClickedCh
+		systray.Quit()
+		fmt.Println("Quit now...")
+		os.Exit(0)
+	}()
+
 	logFilter := &logutils.LevelFilter{
 		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
 		MinLevel: logutils.LogLevel("WARN"),
@@ -114,6 +171,7 @@ func main() {
 	sonos.HandleFunc("/updates", HandleUpdate).Methods("POST")
 
 	auth = spotify.NewAuthenticator(redirectURI, spotify.ScopeUserReadCurrentlyPlaying, spotify.ScopeUserReadPlaybackState, spotify.ScopeUserModifyPlaybackState)
+
 	go func() {
 		if config.ClientId != "" {
 			auth.SetAuthInfo(config.ClientId, "")
