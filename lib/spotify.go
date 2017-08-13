@@ -29,8 +29,9 @@ func Authenticate() {
 			auth.SetAuthInfo(config.ClientId, "")
 		}
 		state = uuid.NewV4().String()
+		log.Print("[DEBUG] created state:", state)
 		url := auth.AuthURL(state)
-		err := open.Run(url + "&show_dialog=true")
+		err := open.Run(url)
 		if err != nil {
 			log.Fatalf("Could not open %s: %v", url, err)
 		}

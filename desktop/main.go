@@ -8,6 +8,7 @@ import (
 	"github.com/atinm/spotify-filter/lib"
 	"github.com/getlantern/systray"
 	"github.com/hashicorp/logutils"
+	"github.com/skratchdot/open-golang/open"
 )
 
 func updateIcon() {
@@ -37,7 +38,8 @@ func onReady() {
 	//systray.SetIcon(icon.Enable)
 	//systray.SetTitle("Kid Friendly Spotify")
 	systray.SetTooltip("Kid Friendly Spotify")
-	mExplicit := systray.AddMenuItem("Parental Control", "Parental Control")
+	mExplicit := systray.AddMenuItem("Parental Controls", "Parental Controls")
+	mAbout := systray.AddMenuItem("About", "About")
 	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
 
 	// We can manipulate the systray in other goroutines
@@ -69,6 +71,8 @@ func onReady() {
 					}
 				}
 				updateIcon()
+			case <-mAbout.ClickedCh:
+				open.Run("https://github.com/atinm/spotify-filter/blob/master/README.md")
 			}
 		}
 	}()

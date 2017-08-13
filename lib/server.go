@@ -10,8 +10,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/logutils"
-	"github.com/satori/go.uuid"
-	"github.com/skratchdot/open-golang/open"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )
@@ -54,7 +52,7 @@ func completeAuth(w http.ResponseWriter, req *http.Request) {
 
 	if st := req.FormValue("state"); st != state {
 		http.NotFound(w, req)
-		log.Fatalf("State mismatch: %s != %s\n", st, state)
+		log.Fatalf("State mismatch: received %s != created %s\n", st, state)
 	}
 
 	tok.AccessToken = req.FormValue("access_token")
@@ -82,34 +80,6 @@ func Server() {
 
 	sonos := router.PathPrefix("/sonos").Subrouter()
 	sonos.HandleFunc("/updates", HandleUpdate).Methods("POST")
-
-	auth = spotify.NewAuthenticator(redirectURI, spotify.ScopeUserReadCurrentlyPlaying, spotify.ScopeUserReadPlaybackState, spotify.ScopeUserModifyPlaybackState)
-
-	go func() {
-		if config.ClientId != "" {
-			auth.SetAuthInfo(config.ClientId, "")
-		}
-		state = uuid.NewV4().String()
-		url := auth.AuthURL(state)
-		err := open.Run(url + "&show_dialog=true")
-		if err != nil {
-			log.Fatalf("Could not open %s: %v", url, err)
-		}
-
-		// wait for auth to complete
-		client = <-ch
-
-		// use the client to make calls that require authorization
-		user, err := client.CurrentUser()
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("[DEBUG] You are logged in as:", user.ID)
-
-		if FiltersEnabled() {
-			go Monitor()
-		}
-	}()
 
 	log.Fatal(http.ListenAndServeTLS(":"+port, certificate, key, router))
 }
