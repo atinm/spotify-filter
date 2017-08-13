@@ -13,6 +13,11 @@ func ignored(device string) bool {
 	return false
 }
 
+func FiltersEnabled() bool {
+	// we only have one rule, but this could be a check whether any are enabled
+	return rule.Explicit
+}
+
 func Rules(track *spotify.FullTrack, device string) bool {
 	// filter explicit
 	if track != nil && rule.Explicit && track.Explicit && !ignored(device) {

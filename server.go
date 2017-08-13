@@ -39,6 +39,7 @@ var (
 	certificate = "cert.pem"
 	key         = "key.pem"
 	port        = "5007"
+	monitoring  = false
 )
 
 func GetFilter(w http.ResponseWriter, req *http.Request) {
@@ -117,6 +118,9 @@ func onReady() {
 					mExplicit.Check()
 					rule.Explicit = true
 					log.Print("[DEBUG] Enabled parental controls")
+					if !monitoring {
+						go Monitor()
+					}
 				}
 				updateIcon()
 			}

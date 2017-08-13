@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/zmb3/spotify"
 	"log"
 	"time"
+
+	"github.com/zmb3/spotify"
 )
 
 const (
@@ -21,9 +22,17 @@ func min(a, b int64) int64 {
 func Monitor() {
 	sleepDuration := MAX_SLEEP_TIME
 	lastTrackUri := spotify.URI("")
-	log.Println("[INFO] Started monitoring Spotify")
 
+	log.Println("[INFO] Started monitoring Spotify")
 	for {
+		// no filters are enabled, no need to monitor
+		if !FiltersEnabled() {
+			log.Print("[INFO] Stopped monitoring Spotify")
+			monitoring = false
+			break
+		}
+		monitoring = true
+
 		playerState, err := client.PlayerState()
 		if err != nil {
 			log.Fatal(err)
@@ -43,7 +52,7 @@ func Monitor() {
 
 				lastTrackUri = currentTrackUri
 			} else {
-				sleepDuration = min(int64(track.Duration - playerState.Progress), MAX_SLEEP_TIME)
+				sleepDuration = min(int64(track.Duration-playerState.Progress), MAX_SLEEP_TIME)
 			}
 		}
 		time.Sleep(time.Duration(sleepDuration) * time.Millisecond)
