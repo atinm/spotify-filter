@@ -20,7 +20,15 @@ func updateIcon() {
 
 func main() {
 	lib.LoadConfig("config.json")
-	// authenticate against spotify
+
+	// initialize authentication, get spotify auth url
+	url := lib.GetAuthURL()
+	// open the spotify auth url in the browser
+	err := open.Run(url)
+	if err != nil {
+		log.Fatalf("Could not open %s: %v", url, err)
+	}
+
 	lib.Authenticate()
 	systray.Run(onReady)
 }

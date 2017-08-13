@@ -5,7 +5,6 @@ import (
 	"time"
 
 	uuid "github.com/satori/go.uuid"
-	"github.com/skratchdot/open-golang/open"
 	"github.com/zmb3/spotify"
 )
 
@@ -27,21 +26,19 @@ func min(a, b time.Duration) time.Duration {
 	return b
 }
 
-func Authenticate() {
+func GetAuthURL() string {
 	auth = spotify.NewAuthenticator(redirectURI, spotify.ScopeUserReadCurrentlyPlaying, spotify.ScopeUserReadPlaybackState, spotify.ScopeUserModifyPlaybackState)
+	if config.ClientId != "" {
+		auth.SetAuthInfo(config.ClientId, "")
+	}
+	state = uuid.NewV4().String()
+	log.Print("[DEBUG] created state:", state)
+	return auth.AuthURL(state)
+}
+
+func Authenticate() {
 
 	go func() {
-		if config.ClientId != "" {
-			auth.SetAuthInfo(config.ClientId, "")
-		}
-		state = uuid.NewV4().String()
-		log.Print("[DEBUG] created state:", state)
-		url := auth.AuthURL(state)
-		err := open.Run(url)
-		if err != nil {
-			log.Fatalf("Could not open %s: %v", url, err)
-		}
-
 		// wait for auth to complete
 		client = <-ch
 
