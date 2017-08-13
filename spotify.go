@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	MAX_SLEEP_TIME = int64(5000)
-	MIN_SLEEP_TIME = int64(1000)
+	MAX_SLEEP_TIME = 5 * time.Second
+	MIN_SLEEP_TIME = 1 * time.Second
 )
 
-func min(a, b int64) int64 {
+func min(a, b time.Duration) time.Duration {
 	if a < b {
 		return a
 	}
@@ -24,11 +24,13 @@ func Monitor() {
 	lastTrackUri := spotify.URI("")
 
 	log.Println("[INFO] Started monitoring Spotify")
+	ticker := time.NewTicker(MAX_SLEEP_TIME)
 	for {
 		// no filters are enabled, no need to monitor
 		if !FiltersEnabled() {
 			log.Print("[INFO] Stopped monitoring Spotify")
 			monitoring = false
+			ticker.Stop()
 			break
 		}
 		monitoring = true
@@ -52,9 +54,15 @@ func Monitor() {
 
 				lastTrackUri = currentTrackUri
 			} else {
-				sleepDuration = min(int64(track.Duration-playerState.Progress), MAX_SLEEP_TIME)
+				timeLeft := time.Duration(track.Duration-playerState.Progress) * time.Millisecond
+				sleepDuration = min(timeLeft, MAX_SLEEP_TIME)
 			}
 		}
-		time.Sleep(time.Duration(sleepDuration) * time.Millisecond)
+		// wait for timer tick
+		select {
+		case <-ticker.C:
+			ticker.Stop()
+			ticker = time.NewTicker(sleepDuration)
+		}
 	}
 }
