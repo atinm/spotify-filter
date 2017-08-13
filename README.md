@@ -21,7 +21,8 @@ The program listens using HTTPS for the authentication token from the authorizat
 need to provide the cert and key pem files. You can generate these from the [generate_cert program in crypto/tls](https://golang.org/src/crypto/tls/generate_cert.go).
 
     go get github.com/atinm/spotify-filter
-    go build
+    cd desktop
+    go build -o spotify-filter
     export SPOTIFY_ID=<the client id from the Spotify application registration>
     ./spotify-filter
 
@@ -51,11 +52,12 @@ application devices list to the config.json file:
         "ignore": ["Pixel", "Basement"]
     }
 
-# Toggling Filtering of Explicit Content
+# Desktop Tray Application
 
-You can either just kill the program to stop filtering, or you have to
-be on the same LAN as the program and go to
-`http://localhost:5005/filter` in the browser (or curl).
+The desktop version of the program starts a tray application that allows you to
+toggle Parental Controls and Quit. If you are able to access to server over the
+the network (e.g. if you are on the same LAN), go to `http://localhost:5005/filter`
+in the browser (or curl) to toggle the parental controls.
 
 # Sonos only
 
