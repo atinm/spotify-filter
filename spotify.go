@@ -24,7 +24,7 @@ func Monitor() {
 	lastTrackUri := spotify.URI("")
 
 	log.Println("[INFO] Started monitoring Spotify")
-	ticker := time.NewTicker(MAX_SLEEP_TIME)
+	ticker := time.NewTicker(MIN_SLEEP_TIME)
 	for {
 		// no filters are enabled, no need to monitor
 		if !FiltersEnabled() {
@@ -34,6 +34,11 @@ func Monitor() {
 			break
 		}
 		monitoring = true
+
+		select {
+		case <-ticker.C:
+			ticker.Stop()
+		}
 
 		playerState, err := client.PlayerState()
 		if err != nil {
@@ -57,12 +62,11 @@ func Monitor() {
 				timeLeft := time.Duration(track.Duration-playerState.Progress) * time.Millisecond
 				sleepDuration = min(timeLeft, MAX_SLEEP_TIME)
 			}
+		} else {
+			sleepDuration = MAX_SLEEP_TIME
 		}
-		// wait for timer tick
-		select {
-		case <-ticker.C:
-			ticker.Stop()
-			ticker = time.NewTicker(sleepDuration)
-		}
+
+		// restart timer
+		ticker = time.NewTicker(sleepDuration)
 	}
 }
