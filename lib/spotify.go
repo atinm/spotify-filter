@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	MAX_SLEEP_TIME = 5 * time.Second
+	MAX_SLEEP_TIME = 15 * time.Second
 	MIN_SLEEP_TIME = 1 * time.Second
 )
 
@@ -79,23 +79,25 @@ func Monitor() {
 		}
 		log.Printf("[DEBUG] Found your %s (%s)\n", playerState.Device.Type, playerState.Device.Name)
 
-		if playerState.Device.Type != "Smartphone" && playerState.Device.Active && !playerState.Device.Restricted && playerState.Playing {
+		if playerState.Playing {
 			track = playerState.Item
-			currentTrackUri := track.URI
-			if lastTrackUri != currentTrackUri {
-				log.Printf("[DEBUG] Found track '%s' by '%s' playing", track.Name, track.Artists[0])
-				if Rules(track, playerState.Device.Name) {
-					log.Printf("[INFO] Skipped track '%s' by '%s' playing on '%s'", track.Name, track.Artists[0], playerState.Device.Name)
-					client.Next()
+			if playerState.Device.Type != "Smartphone" && playerState.Device.Active && !playerState.Device.Restricted {
+				currentTrackUri := track.URI
+				if lastTrackUri != currentTrackUri {
+					log.Printf("[DEBUG] Found track '%s' by '%s' playing", track.Name, track.Artists[0])
+					if Rules(track, playerState.Device.Name) {
+						log.Printf("[INFO] Skipped track '%s' by '%s' playing on '%s'", track.Name, track.Artists[0], playerState.Device.Name)
+						client.Next()
+					}
+					// minimum because player is active, could be manually skipped etc
 					sleepDuration = MIN_SLEEP_TIME
+					lastTrackUri = currentTrackUri
 				}
-
-				lastTrackUri = currentTrackUri
-			} else {
-				timeLeft := time.Duration(track.Duration-playerState.Progress) * time.Millisecond
-				sleepDuration = min(timeLeft, MAX_SLEEP_TIME)
 			}
+			timeLeft := time.Duration(track.Duration-playerState.Progress) * time.Millisecond
+			sleepDuration = min(timeLeft, sleepDuration)
 		} else {
+			// player is not active, sleep longer
 			sleepDuration = MAX_SLEEP_TIME
 		}
 

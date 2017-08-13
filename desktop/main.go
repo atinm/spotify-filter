@@ -49,6 +49,8 @@ func onReady() {
 		if lib.ParentalControlsEnabled() {
 			mExplicit.Check()
 			log.Print("[DEBUG] parental controls are enabled")
+			// start the server to listen for authentication
+			go lib.Server()
 		} else {
 			mExplicit.Uncheck()
 			log.Print("[DEBUG] parental controls are disabled")
@@ -83,7 +85,4 @@ func onReady() {
 		log.Print("[DEBUG] Quitting")
 		os.Exit(0)
 	}()
-
-	// start the server to listen for authentication, never returns
-	lib.Server()
 }

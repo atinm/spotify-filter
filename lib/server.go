@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -35,6 +36,7 @@ var (
 	key         = "key.pem"
 	port        = "5007"
 	monitoring  = false
+	srv         *http.Server
 	LogFilter   *logutils.LevelFilter
 )
 
@@ -69,6 +71,12 @@ func completeAuth(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(w, "Monitoring authorization completed! You can close this window now.")
 	ch <- &client
+
+	// we are done with the server
+	log.Print("[DEBUG] Shutting down authentication listener")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	srv.Shutdown(ctx)
 }
 
 func Server() {
@@ -81,5 +89,6 @@ func Server() {
 	sonos := router.PathPrefix("/sonos").Subrouter()
 	sonos.HandleFunc("/updates", HandleUpdate).Methods("POST")
 
-	log.Fatal(http.ListenAndServeTLS(":"+port, certificate, key, router))
+	srv = &http.Server{Addr: ":" + port, Handler: router}
+	srv.ListenAndServeTLS(certificate, key)
 }
