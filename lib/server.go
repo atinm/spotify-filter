@@ -1,16 +1,13 @@
-package main
+package lib
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
-	"github.com/atinm/spotify-filter/icon"
-	"github.com/getlantern/systray"
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/logutils"
 	"github.com/satori/go.uuid"
@@ -40,6 +37,7 @@ var (
 	key         = "key.pem"
 	port        = "5007"
 	monitoring  = false
+	LogFilter   *logutils.LevelFilter
 )
 
 func GetFilter(w http.ResponseWriter, req *http.Request) {
@@ -75,100 +73,7 @@ func completeAuth(w http.ResponseWriter, req *http.Request) {
 	ch <- &client
 }
 
-func updateIcon() {
-	if rule.Explicit {
-		systray.SetIcon(icon.Enable)
-	} else {
-		systray.SetIcon(icon.Disable)
-	}
-}
-func main() {
-	// Should be called at the very beginning of main().
-	systray.Run(onReady)
-}
-
-func onReady() {
-	//systray.SetIcon(icon.Enable)
-	//systray.SetTitle("Kid Friendly Spotify")
-	systray.SetTooltip("Kid Friendly Spotify")
-	mExplicit := systray.AddMenuItem("Parental Control", "Parental Control")
-	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
-
-	// We can manipulate the systray in other goroutines
-	go func() {
-		//systray.SetTitle("Kid Friendly Spotify")
-		systray.SetTooltip("Kid Friendly Spotify")
-		if rule.Explicit {
-			mExplicit.Check()
-			log.Print("[DEBUG] parental controls are enabled")
-		} else {
-			mExplicit.Uncheck()
-			log.Print("[DEBUG] parental controls are disabled")
-		}
-		updateIcon()
-
-		for {
-			select {
-			case <-mExplicit.ClickedCh:
-				if mExplicit.Checked() {
-					mExplicit.Uncheck()
-					rule.Explicit = false
-					log.Print("[DEBUG] Disabled parental controls")
-				} else {
-					mExplicit.Check()
-					rule.Explicit = true
-					log.Print("[DEBUG] Enabled parental controls")
-					if !monitoring {
-						go Monitor()
-					}
-				}
-				updateIcon()
-			}
-		}
-	}()
-
-	go func() {
-		<-mQuit.ClickedCh
-		systray.Quit()
-		fmt.Println("Quit now...")
-		os.Exit(0)
-	}()
-
-	logFilter := &logutils.LevelFilter{
-		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
-		MinLevel: logutils.LogLevel("WARN"),
-		Writer:   os.Stderr,
-	}
-	log.SetOutput(logFilter)
-
-	conf, err := os.Open("config.json")
-	if err != nil {
-		log.Print("[DEBUG] No config file specified, ignoring.")
-	} else {
-		defer conf.Close()
-
-		decoder := json.NewDecoder(conf)
-		err = decoder.Decode(&config)
-		if err != nil {
-			log.Fatalf("Config file 'config.json could not be read, %v", err)
-		}
-		if config.LogLevel != "" {
-			logFilter.SetMinLevel(config.LogLevel)
-		}
-		if config.RedirectURI != "" {
-			redirectURI = config.RedirectURI
-		}
-		if config.CertificateFile != "" {
-			certificate = config.CertificateFile
-		}
-		if config.KeyFile != "" {
-			key = config.KeyFile
-		}
-		if config.Port != "" {
-			port = config.Port
-		}
-	}
-
+func Server() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/callback", completeAuth).Methods("GET")
@@ -200,7 +105,10 @@ func onReady() {
 			log.Fatal(err)
 		}
 		log.Println("[DEBUG] You are logged in as:", user.ID)
-		go Monitor()
+
+		if FiltersEnabled() {
+			go Monitor()
+		}
 	}()
 
 	log.Fatal(http.ListenAndServeTLS(":"+port, certificate, key, router))

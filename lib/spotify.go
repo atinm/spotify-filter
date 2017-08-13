@@ -1,9 +1,11 @@
-package main
+package lib
 
 import (
 	"log"
 	"time"
 
+	uuid "github.com/satori/go.uuid"
+	"github.com/skratchdot/open-golang/open"
 	"github.com/zmb3/spotify"
 )
 
@@ -17,6 +19,36 @@ func min(a, b time.Duration) time.Duration {
 		return a
 	}
 	return b
+}
+
+func Authenticate() {
+	auth = spotify.NewAuthenticator(redirectURI, spotify.ScopeUserReadCurrentlyPlaying, spotify.ScopeUserReadPlaybackState, spotify.ScopeUserModifyPlaybackState)
+
+	go func() {
+		if config.ClientId != "" {
+			auth.SetAuthInfo(config.ClientId, "")
+		}
+		state = uuid.NewV4().String()
+		url := auth.AuthURL(state)
+		err := open.Run(url + "&show_dialog=true")
+		if err != nil {
+			log.Fatalf("Could not open %s: %v", url, err)
+		}
+
+		// wait for auth to complete
+		client = <-ch
+
+		// use the client to make calls that require authorization
+		user, err := client.CurrentUser()
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("[DEBUG] You are logged in as:", user.ID)
+
+		if FiltersEnabled() {
+			go Monitor()
+		}
+	}()
 }
 
 func Monitor() {

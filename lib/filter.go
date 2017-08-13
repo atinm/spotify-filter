@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"github.com/zmb3/spotify"
@@ -15,6 +15,10 @@ func ignored(device string) bool {
 
 func FiltersEnabled() bool {
 	// we only have one rule, but this could be a check whether any are enabled
+	return ParentalControlsEnabled()
+}
+
+func ParentalControlsEnabled() bool {
 	return rule.Explicit
 }
 
@@ -24,4 +28,8 @@ func Rules(track *spotify.FullTrack, device string) bool {
 		return true
 	}
 	return false
+}
+
+func SetParentalControls(b bool) {
+	rule.Explicit = b
 }
