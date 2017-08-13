@@ -10,8 +10,14 @@ import (
 )
 
 const (
-	MAX_SLEEP_TIME = 15 * time.Second
-	MIN_SLEEP_TIME = 1 * time.Second
+	MAX_SLEEP_TIME     = 15 * time.Second
+	MIN_SLEEP_TIME     = 1 * time.Second
+	DEEP_SLEEP_TIME    = 1 * time.Minute
+	DEEP_SLEEP_COUNTER = 20 // 5 minutes
+)
+
+var (
+	deepSleepCounter = 0
 )
 
 func min(a, b time.Duration) time.Duration {
@@ -80,6 +86,7 @@ func Monitor() {
 		log.Printf("[DEBUG] Found your %s (%s)\n", playerState.Device.Type, playerState.Device.Name)
 
 		if playerState.Playing {
+			log.Print("[DEBUG] playerState is Playing")
 			track = playerState.Item
 			if playerState.Device.Type != "Smartphone" && playerState.Device.Active && !playerState.Device.Restricted {
 				currentTrackUri := track.URI
@@ -96,9 +103,15 @@ func Monitor() {
 			}
 			timeLeft := time.Duration(track.Duration-playerState.Progress) * time.Millisecond
 			sleepDuration = min(timeLeft, sleepDuration)
+			deepSleepCounter = 0
 		} else {
-			// player is not active, sleep longer
-			sleepDuration = MAX_SLEEP_TIME
+			deepSleepCounter += 1
+			if deepSleepCounter >= DEEP_SLEEP_COUNTER {
+				sleepDuration = DEEP_SLEEP_TIME
+				deepSleepCounter = DEEP_SLEEP_COUNTER
+			} else {
+				sleepDuration = MAX_SLEEP_TIME
+			}
 		}
 
 		// restart timer
