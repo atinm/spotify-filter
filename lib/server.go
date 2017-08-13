@@ -79,6 +79,10 @@ func completeAuth(w http.ResponseWriter, req *http.Request) {
 	srv.Shutdown(ctx)
 }
 
+func StartServer() {
+	go Server()
+}
+
 func Server() {
 	router := mux.NewRouter()
 

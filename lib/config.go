@@ -20,6 +20,13 @@ type Config struct {
 }
 
 func LoadConfig(file string) {
+	LogFilter = &logutils.LevelFilter{
+		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
+		MinLevel: logutils.LogLevel("WARN"),
+		Writer:   os.Stderr,
+	}
+	log.SetOutput(LogFilter)
+
 	conf, err := os.Open(file)
 	if err != nil {
 		log.Print("[DEBUG] No config file specified, ignoring.")

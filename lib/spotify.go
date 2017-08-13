@@ -11,7 +11,7 @@ import (
 
 const (
 	MAX_SLEEP_TIME     = 15 * time.Second
-	MIN_SLEEP_TIME     = 1 * time.Second
+	MIN_SLEEP_TIME     = 5 * time.Second
 	DEEP_SLEEP_TIME    = 1 * time.Minute
 	DEEP_SLEEP_COUNTER = 20 // 5 minutes
 )
@@ -56,6 +56,10 @@ func Authenticate() {
 			go Monitor()
 		}
 	}()
+}
+
+func StartMonitor() {
+	go Monitor()
 }
 
 func Monitor() {
