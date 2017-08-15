@@ -104,6 +104,9 @@ func Monitor() {
 			}
 			timeLeft := time.Duration(track.Duration-playerState.Progress) * time.Millisecond
 			sleepDuration = min(timeLeft, sleepDuration)
+			if sleepDuration < 0 {
+				sleepDuration = time.Second
+			}
 			deepSleepCounter = 0
 		} else {
 			deepSleepCounter += 1
