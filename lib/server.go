@@ -77,6 +77,9 @@ func completeAuth(w http.ResponseWriter, req *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	srv.Shutdown(ctx)
+
+	// now we can start sonos as well
+	InitializeSonos()
 }
 
 func StartServer() {
@@ -89,9 +92,6 @@ func Server() {
 	router.HandleFunc("/callback", completeAuth).Methods("GET")
 	router.HandleFunc("/filter", GetFilter).Methods("GET")
 	router.HandleFunc("/filter", ToggleFilter).Methods("PUT")
-
-	sonos := router.PathPrefix("/sonos").Subrouter()
-	sonos.HandleFunc("/updates", HandleUpdate).Methods("POST")
 
 	srv = &http.Server{Addr: ":" + port, Handler: router}
 	srv.ListenAndServeTLS(certificate, key)

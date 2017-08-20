@@ -59,28 +59,15 @@ toggle Parental Controls and Quit. If you are able to access to server over the
 the network (e.g. if you are on the same LAN), go to `http://localhost:5005/filter`
 in the browser (or curl) to toggle the parental controls.
 
-# Sonos only
-
-Filtering Spotify explicit songs from playing on Sonos requires
-running [`https://github.com/jishi/node-sonos-http-api`](https://github.com/jishi/node-sonos-http-api) locally on port
-5005 (default).
-
-Follow the instructions on how to start it. You will need to create a
-`settings.json` (not spotify-filter) file for node-sonos-http-api with:
-
-    {
-        "webhook": "http://localhost:5007/sonos/updates"
-    }
-
-to get updates from Sonos into the spotify-filter program.
-
 # TBD
 
 Replacing explicit songs with Radio Edits (this is blocked on Spotify
-not exposing the play queue for editing). A workaround that copies a
-playlist, replaces explicit songs with radio edits if available can be
-done for when playing from playlists, but that isn't a complete
-solution.
+not exposing the play queue for editing) in the Sonos queue.
+
+A workaround for the Spotify app itself that copies a playlist, replaces
+explicit songs with radio edits if available can be done for when playing
+from playlists, but that isn't a complete solution. That has to wait for
+Spotify to give access to its queue.
 
 # Support
 
