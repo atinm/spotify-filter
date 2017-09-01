@@ -187,7 +187,7 @@ func handleAVTransportEvents(reactor upnp.Reactor, c chan bool) {
 						log.Printf("[DEBUG] Querying spotify for %s", query)
 						// search for radio friendly track for artist, title, album, explicit=false instead
 						if res, err := client.Search(query, spotify.SearchTypeTrack); err != nil || len(res.Tracks.Tracks) == 0 {
-							log.Printf("Could not find '%s' by '%s' in search: %v", title, artist, err)
+							log.Printf("[DEBUG] Could not find '%s' by '%s' in search: %v", title, artist, err)
 							player.Next(0)
 							if err != nil {
 								log.Printf("[WARN] Could not skip track '%s' by '%s': %v", title, artist, err)
@@ -197,7 +197,7 @@ func handleAVTransportEvents(reactor upnp.Reactor, c chan bool) {
 						} else {
 							var complete = false
 							for _, track := range res.Tracks.Tracks {
-								log.Print("Found tracks searching for alternates")
+								log.Print("[DEBUG] Found tracks searching for alternates")
 								if !track.Explicit {
 									log.Print("Found radio-friendly track")
 									uri := fmt.Sprintf("x-sonos-spotify:spotify%%3atrack%%3a%s?%s", track.ID, parsedTrackURI[1])
@@ -209,7 +209,7 @@ func handleAVTransportEvents(reactor upnp.Reactor, c chan bool) {
 										EnqueuedURIMetaData:             meta,
 										DesiredFirstTrackNumberEnqueued: uint32(currentTrack + 1),
 									}
-									log.Printf("Queued: %s", meta)
+									log.Printf("[DEBUG] Queued: %s", meta)
 									if _, err := player.AddURIToQueue(0 /*instanceId*/, &req); nil != err {
 										log.Printf("[INFO] Couldn't add radio-friendly version '%s', '%s' of '%s' by '%s', skipped playing on '%s': %v\n",
 											track.ID, track.URI, title, artist, player.Player.RoomName, err)
@@ -243,7 +243,7 @@ func handleAVTransportEvents(reactor upnp.Reactor, c chan bool) {
 						}
 					}
 				} else {
-					log.Printf("Not playing Spotify track: %s", uri)
+					log.Printf("[DEBUG] Not playing Spotify track: %s", uri)
 				}
 			case upnp.ContentDirectory_EventType:
 
@@ -268,7 +268,7 @@ func SetupEvents(mgr ssdp.Manager) {
 func InitializeSonos() {
 	mgr := ssdp.MakeManager()
 	ifname := getLocalInterfaceName()
-	log.Printf("Discovering devices over %s...", ifname)
+	log.Printf("[DEBUG] Discovering devices over %s...", ifname)
 	if err := mgr.Discover(ifname, port, false); nil != err {
 		panic(err)
 	} else {
