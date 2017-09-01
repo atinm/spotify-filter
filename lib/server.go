@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/atinm/spotify"
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/logutils"
-	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )
 
@@ -24,20 +24,21 @@ var (
 	// the client id and client secret and can get the access token and refresh
 	// token from Spotify and return to this application on its own callback as
 	// query parameters
-	redirectURI = "https://localhost:5009/callback"
-	rule        = Rule{Explicit: true}
-	client      *spotify.Client
-	track       *spotify.FullTrack
-	roomName    string
-	auth        spotify.Authenticator
-	ch          = make(chan *spotify.Client)
-	state       string
-	certificate = "cert.pem"
-	key         = "key.pem"
-	port        = "5007"
-	monitoring  = false
-	srv         *http.Server
-	LogFilter   *logutils.LevelFilter
+	redirectURI  = "https://localhost:5009/callback"
+	authTokenURL = "http://localhost:5009/token"
+	rule         = Rule{Explicit: true}
+	client       *spotify.Client
+	track        *spotify.FullTrack
+	roomName     string
+	auth         spotify.Authenticator
+	ch           = make(chan *spotify.Client)
+	state        string
+	certificate  = "cert.pem"
+	key          = "key.pem"
+	port         = "5007"
+	monitoring   = false
+	srv          *http.Server
+	LogFilter    *logutils.LevelFilter
 )
 
 func GetFilter(w http.ResponseWriter, req *http.Request) {
@@ -51,6 +52,7 @@ func ToggleFilter(w http.ResponseWriter, req *http.Request) {
 
 func completeAuth(w http.ResponseWriter, req *http.Request) {
 	var tok oauth2.Token
+	log.Print("[DEBUG] Received callback to completeAuth")
 
 	if st := req.FormValue("state"); st != state {
 		http.NotFound(w, req)
@@ -64,7 +66,7 @@ func completeAuth(w http.ResponseWriter, req *http.Request) {
 	if expires != 0 {
 		tok.Expiry = time.Now().Add(time.Duration(expires) * time.Second)
 	}
-
+	log.Print("[DEBUG] Getting new authenticated client")
 	// use the token to get an authenticated client
 	client := auth.NewClient(&tok)
 
@@ -77,6 +79,9 @@ func completeAuth(w http.ResponseWriter, req *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	srv.Shutdown(ctx)
+
+	// now update the token url to handle fresh
+	auth.SetTokenURL(authTokenURL)
 
 	// now we can start sonos as well
 	InitializeSonos()
@@ -94,5 +99,6 @@ func Server() {
 	router.HandleFunc("/filter", ToggleFilter).Methods("PUT")
 
 	srv = &http.Server{Addr: ":" + port, Handler: router}
+	log.Print("[DEBUG] Listening on " + port)
 	srv.ListenAndServeTLS(certificate, key)
 }

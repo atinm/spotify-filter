@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"github.com/zmb3/spotify"
+	"github.com/atinm/spotify"
 )
 
 func ignored(device string) bool {

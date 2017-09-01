@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/atinm/spotify"
 	uuid "github.com/satori/go.uuid"
-	"github.com/zmb3/spotify"
 )
 
 const (
@@ -31,9 +31,12 @@ func GetAuthURL() string {
 	if config.ClientId != "" {
 		auth.SetAuthInfo(config.ClientId, "")
 	}
+
+	auth.SetTokenURL(authTokenURL)
+
 	state = uuid.NewV4().String()
 	log.Print("[DEBUG] created state:", state)
-	return auth.AuthURL(state)
+	return auth.AuthURL(state) // + "&show_dialog=true"
 }
 
 func Authenticate() {

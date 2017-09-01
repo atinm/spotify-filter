@@ -15,7 +15,7 @@ import (
 	"github.com/atinm/go-sonos/didl"
 	"github.com/atinm/go-sonos/ssdp"
 	"github.com/atinm/go-sonos/upnp"
-	"github.com/zmb3/spotify"
+	"github.com/atinm/spotify"
 )
 
 var (

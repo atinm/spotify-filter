@@ -13,6 +13,7 @@ type Config struct {
 	ClientId        string            `json:"client_id"`
 	ClientSecret    string            `json:"client_secret"`
 	RedirectURI     string            `json:"redirect_uri"`
+	AuthTokenURI    string            `json:"auth_token_uri"`
 	CertificateFile string            `json:"cert"`
 	KeyFile         string            `json:"key"`
 	Port            string            `json:"port"`
@@ -43,6 +44,9 @@ func LoadConfig(file string) {
 		}
 		if config.RedirectURI != "" {
 			redirectURI = config.RedirectURI
+		}
+		if config.AuthTokenURI != "" {
+			authTokenURL = config.AuthTokenURI
 		}
 		if config.CertificateFile != "" {
 			certificate = config.CertificateFile
