@@ -199,7 +199,7 @@ func handleAVTransportEvents(reactor upnp.Reactor, c chan bool) {
 							for _, track := range res.Tracks.Tracks {
 								log.Print("[DEBUG] Found tracks searching for alternates")
 								if !track.Explicit {
-									log.Print("Found radio-friendly track")
+									log.Print("[DEBUG] Found radio-friendly track")
 									uri := fmt.Sprintf("x-sonos-spotify:spotify%%3atrack%%3a%s?%s", track.ID, parsedTrackURI[1])
 									//var uri = "x-sonos-spotify:spotify%3atrack%3a" + trackID
 									var meta = "<DIDL-Lite xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:r=\"urn:schemas-rinconnetworks-com:metadata-1-0/\" xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\"><item id=\"-1\" parentID=\"-1\" restricted=\"true\"><res protocolInfo=\"sonos.com-spotify:*:audio/x-spotify:*\" duration=\"" + posInfo.TrackDuration + "\">x-sonos-spotify:spotify%3atrack%3a" + trackID + "?sid=12&amp;flags=8224&amp;sn=8</res><r:streamContent></r:streamContent><r:radioShowMd></r:radioShowMd><upnp:albumArtURI>/getaa?s=1&amp;u=x-sonos-spotify%3aspotify%253atrack%253a" + trackID + "%3fsid%3d12%26flags%3d8224%26sn%3d8</upnp:albumArtURI><dc:title>" + title + "</dc:title><upnp:class>object.item.audioItem.musicTrack</upnp:class><dc:creator>" + artist +
@@ -261,7 +261,7 @@ func SetupEvents(mgr ssdp.Manager) {
 	sonosDevices = sonos.ConnectAll(mgr, reactor, sonos.SVC_AV_TRANSPORT|sonos.SVC_CONTENT_DIRECTORY)
 	log.Printf("[DEBUG] Set up event handler for Sonos, found %d devices", len(sonosDevices))
 	for _, player := range sonosDevices {
-		log.Printf("Found %s", player.RoomName)
+		log.Printf("[DEBUG] Found %s", player.RoomName)
 	}
 }
 
